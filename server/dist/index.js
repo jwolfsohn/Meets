@@ -14,7 +14,9 @@ const config_1 = require("./config");
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const PORT = process.env.PORT || 5000;
-app.use((0, cors_1.default)({ origin: config_1.CLIENT_ORIGIN }));
+// In dev, reflect the request origin to avoid CORS friction (localhost vs 127.0.0.1 vs LAN IP).
+// In prod, lock down to a single configured origin.
+app.use((0, cors_1.default)({ origin: config_1.IS_PROD ? config_1.CLIENT_ORIGIN : true }));
 app.use(express_1.default.json({ limit: '1mb' }));
 // Routes
 app.use('/api/auth', auth_1.default);

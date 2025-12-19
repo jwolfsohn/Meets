@@ -1,4 +1,6 @@
-@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
   color-scheme: light;
@@ -27,6 +29,7 @@ body {
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
+
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
@@ -36,11 +39,13 @@ body {
 .custom-scrollbar::-webkit-scrollbar {
   width: 10px;
 }
+
 .custom-scrollbar::-webkit-scrollbar-thumb {
   background: rgba(0, 0, 0, 0.12);
   border-radius: 999px;
   border: 3px solid rgba(255, 255, 255, 0.6);
-  }
+}
+
 .custom-scrollbar::-webkit-scrollbar-track {
   background: transparent;
 }

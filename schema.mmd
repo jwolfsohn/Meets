@@ -1,0 +1,87 @@
+erDiagram
+    User {
+        String email     %% @validate { required: true, email: true }, @unique
+        String password  %% @validate { required: true, min_length: 8 }
+        Boolean isActive %% @default true
+        DateTime createdAt %% @default now()
+
+        %% @ui { title: "Users", icon: "fa-user" }
+    }
+
+    Profile {
+        String displayName  %% @validate { required: true, min_length: 2 }
+        String bio          %% @validate { max_length: 500 }
+        Integer age         %% @validate { required: true, min: 18 }
+        String location     %% @validate { required: false }
+        String gender       
+        String preferences  %% @json
+        
+        %% @relation { type: "one-to-one", field: "user", target: "User" }
+        %% @ui { title: "Profiles", icon: "fa-id-card" }
+    }
+
+    Photo {
+        String url          %% @validate { required: true, url: true }
+        Integer sortOrder   %% @default 0
+        Boolean isPrimary   %% @default false
+
+        %% @relation { type: "many-to-one", field: "profile", target: "Profile" }
+        %% @ui { title: "Photos", icon: "fa-camera" }
+    }
+
+    Like {
+        DateTime createdAt %% @default now()
+        
+        %% @relation { type: "many-to-one", field: "sender", target: "User" }
+        %% @relation { type: "many-to-one", field: "receiver", target: "User" }
+        %% @unique { fields: ["sender", "receiver"] }
+        %% @ui { title: "Likes", icon: "fa-heart" }
+    }
+
+    Match {
+        DateTime matchedAt %% @default now()
+        Boolean isActive   %% @default true
+
+        %% @relation { type: "many-to-one", field: "user1", target: "User" }
+        %% @relation { type: "many-to-one", field: "user2", target: "User" }
+        %% @unique { fields: ["user1", "user2"] }
+        %% @ui { title: "Matches", icon: "fa-handshake" }
+    }
+
+    AvailabilitySlot {
+        DateTime startTime %% @validate { required: true }
+        DateTime endTime   %% @validate { required: true }
+        Boolean isBooked   %% @default false
+
+        %% @relation { type: "many-to-one", field: "user", target: "User" }
+        %% @ui { title: "Availability", icon: "fa-calendar" }
+    }
+
+    CallInvite {
+        String status       %% @default "pending", options: ["pending", "accepted", "declined", "expired"]
+        DateTime createdAt  %% @default now()
+
+        %% @relation { type: "many-to-one", field: "match", target: "Match" }
+        %% @relation { type: "many-to-one", field: "proposer", target: "User" }
+        %% @relation { type: "many-to-one", field: "slot", target: "AvailabilitySlot" }
+        %% @ui { title: "Call Invites", icon: "fa-envelope-open-text" }
+    }
+
+    CallBooking {
+        DateTime scheduledTime %% @validate { required: true }
+        String status          %% @default "scheduled", options: ["scheduled", "completed", "canceled", "no_show"]
+        String meetingLink     %% @validate { url: true }
+
+        %% @relation { type: "one-to-one", field: "invite", target: "CallInvite" }
+        %% @ui { title: "Bookings", icon: "fa-video" }
+    }
+
+    BlockReport {
+        String type        %% @validate { required: true }, options: ["block", "report"]
+        String reason
+        DateTime createdAt %% @default now()
+
+        %% @relation { type: "many-to-one", field: "reporter", target: "User" }
+        %% @relation { type: "many-to-one", field: "target", target: "User" }
+        %% @ui { title: "Safety", icon: "fa-shield-alt" }
+    }
